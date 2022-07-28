@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <title>学生行程录入</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="icon" href="/resources/favicon.ico">
+    <link rel="stylesheet" href="resources/layui/css/layui.css" th:href="@{/resources/layui/css/layui.css}"
+          media="all"/>
+    <link rel="stylesheet" href="resources/css/public.css" th:href="@{/resources/css/public.css}" media="all"/>
+    <link rel="stylesheet" th:href="@{/resources/layui_ext/dtree/dtree.css}" media="all"/>
+    <link rel="stylesheet" th:href="@{/resources/layui_ext/dtree/font/dtreefont.css}" media="all"/>
+</head>
+<style>
+    .uploadcss{
+        text-align: center;
+        margin-top: 15px;
+    }
+    .centerupload{
+        margin: 0 auto;
+    }
+</style>
+<body class="childrenBody">
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;">
+    <legend>学生行程录入</legend>
+</fieldset>
+
+
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;">
+    <legend><label style="font-size: small;color: red" id="trantext"></label></legend>
+</fieldset>
+<div class="layui-card">
+    <div class="layui-card-body">
+        <form class="layui-form" action="" lay-filter="example">
+            <div class="layui-form-item">
+                <label class="layui-form-label">宿舍区：</label>
+                <div class="layui-input-block">
+                    <select name="department" lay-filter="aihao">
+                        <option value="学一">请输入你所在宿舍区...</option>
+                        <option value="学一">学一</option>
+                        <option value="学二">学二</option>
+                        <option value="学三">学三</option>
+                        <option value="学四">学四</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">返程车次：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="trainno" lay-verify="trainno" autocomplete="off" placeholder="车次或者航班如：Z114或CZ3842" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">出发地区：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="fromarea" lay-verify="fromarea" autocomplete="off" placeholder="请输入出发地如： 南昌" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">到达地区：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="arrive" lay-verify="arrive" autocomplete="off" placeholder="请输入到站地区如：唐山" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">返程时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" name="arrdate" id="test1" placeholder="yyyy-MM-dd">
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="submit" class="layui-btn" lay-submit="" lay-filter="transubmit">立即提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<script type="text/javascript" src="/resources/layui/layui.js"></script>
+
+<script type="text/javascript">
+    layui.config({base:'/resources/layui_ext/'}).extend({ dtree: 'dtree/dtree',echarts: 'echarts/echarts'}).use(['jquery', 'form', 'layer', 'laydate', 'table','layedit','upload', 'dtree','element', 'echarts', 'carousel'], function () {
+        var $ = layui.jquery;
+        var element = layui.element;
+        echarts = layui.echarts;
+        carousel = layui.carousel;
+        var form = layui.form;
+        var layer = layui.layer;
+        var laydate = layui.laydate;
+        var table = layui.table;
+        var layedit = layui.layedit;
+        var upload = layui.upload;
+        var dtree = layui.dtree;
+
+        //常规用法
+        laydate.render({
+            elem: '#test1'
+        });
+
+
+//监听提交
+        form.on('submit(transubmit)', function(data){
+            if(data.field.trainno==null||data.field.trainno==""||data.field.department==""||data.field.arrive==""||data.field.arrdate==""){
+                layer.msg("请补充完整表格信息！");
+                return false;
+            }
+            $.post("/bus/tran/tranjudge",data.field,function (res) {
+                layer.msg(res.msg);
+                $("#trantext").html(res.msg);
+            });
+            return false;
+        });
+
+
+
+    });
+
+</script>
+
+</body>
+</html>
